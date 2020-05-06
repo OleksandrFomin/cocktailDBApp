@@ -1,6 +1,5 @@
-import React, {useContext} from 'react';
+import React, {useContext, useRef} from 'react';
 import {
-  FlatList,
   View,
   Text,
   Image,
@@ -13,9 +12,13 @@ import Center from './utilities/Center';
 import {fonts, colors} from './utilities/style';
 
 const DrinksList = () => {
-  const {drinksList, setCurrentPage, isLoading, isFetching} = useContext(
-    Context,
-  );
+  const {
+    drinksList,
+    currentPage,
+    setCurrentPage,
+    isLoading,
+    isFetching,
+  } = useContext(Context);
 
   return (
     <>
@@ -28,7 +31,8 @@ const DrinksList = () => {
           keyExtractor={(item) => item.idDrink.toString()}
           sections={drinksList}
           onEndReached={() => {
-            if (!isLoading) {
+            // subsuqent api call will  NOT be made if there is an ongoing async action or the last page has been reached
+            if (!isLoading && currentPage + 1 < drinksList.length) {
               setCurrentPage((page) => page + 1);
             }
           }}
@@ -49,7 +53,6 @@ const DrinksList = () => {
           }}
         />
       )}
-
       {isFetching && <ActivityIndicator size={'large'} />}
     </>
   );

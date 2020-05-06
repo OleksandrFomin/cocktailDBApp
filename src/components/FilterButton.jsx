@@ -3,7 +3,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {TouchableWithoutFeedback, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
-const FilterButton = (props) => {
+const FilterButton = () => {
   const navigation = useNavigation();
 
   return (

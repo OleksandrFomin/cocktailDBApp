@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {CheckBox} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
+import Button from '../components/Common/Button';
 
 const Filter = () => {
   const navigation = useNavigation();
@@ -23,6 +24,7 @@ const Filter = () => {
     defaultDrinkCategories,
   );
 
+  // copy default categories array and change isChecked prop on press
   const toggleCheckBoxHandler = (id) => {
     const changedCheckbox = toggledCategories.find(
       (category) => category.id === id,
@@ -32,6 +34,7 @@ const Filter = () => {
     setToggledCategories([...toggledCategories]);
   };
 
+  // create new array containing only isChecked: true items and set it to drinkCategories
   const onApplyHandler = () => {
     setDrinksList([]);
     setCurrentPage(0);
@@ -43,46 +46,36 @@ const Filter = () => {
   };
 
   return (
-    <>
-      <View style={styles.screen}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {defaultDrinkCategories.map((item) => {
-            return (
-              <TouchableOpacity
-                key={item.id}
-                onPress={() => {
-                  toggleCheckBoxHandler(item.id);
-                }}>
-                <View style={styles.filterElementContainer}>
-                  <Text style={styles.filterElementText}>
-                    {item.strCategory}
-                  </Text>
-                  <View style={{marginRight: -40}}>
-                    <CheckBox
-                      checked={item.isChecked}
-                      onPress={() => {
-                        toggleCheckBoxHandler(item.id);
-                      }}
-                      checkedIcon="check"
-                      checkedColor="#000"
-                      uncheckedColor="rgba(255, 255, 255, 0)"
-                      right={true}
-                    />
-                  </View>
+    <View style={styles.screen}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {defaultDrinkCategories.map((item) => {
+          return (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => {
+                toggleCheckBoxHandler(item.id);
+              }}>
+              <View style={styles.filterElementContainer}>
+                <Text style={styles.filterElementText}>{item.strCategory}</Text>
+                <View style={{marginRight: -40}}>
+                  <CheckBox
+                    checked={item.isChecked}
+                    onPress={() => {
+                      toggleCheckBoxHandler(item.id);
+                    }}
+                    checkedIcon="check"
+                    checkedColor="#000"
+                    uncheckedColor="rgba(255, 255, 255, 0)"
+                    right={true}
+                  />
                 </View>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-        <View>
-          <TouchableOpacity
-            onPress={onApplyHandler}
-            style={styles.btnContainer}>
-            <Text style={styles.btnText}>Apply</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+      <Button btnName="Apply" onPressHandler={onApplyHandler} />
+    </View>
   );
 };
 
@@ -102,18 +95,6 @@ const styles = StyleSheet.create({
   filterElementText: {
     color: '#7E7E7E',
     fontSize: 16,
-  },
-
-  btnContainer: {
-    backgroundColor: '#272727',
-    paddingVertical: 15,
-    marginVertical: 25,
-  },
-  btnText: {
-    fontSize: 16,
-    textTransform: 'uppercase',
-    color: '#fff',
-    textAlign: 'center',
   },
 });
 

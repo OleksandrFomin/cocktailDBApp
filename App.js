@@ -50,7 +50,6 @@ const App = () => {
   useEffect(() => {
     const fetchDrinks = async () => {
       setIsFetching(true);
-
       const drinks = await getDrinksRequest(
         drinkCategories[currentPage].strCategory,
       );
@@ -65,6 +64,7 @@ const App = () => {
       setIsFetching(false);
     };
 
+    // mimics componentDidUpdate method
     if (didMountRef.current) {
       fetchDrinks();
     } else {
