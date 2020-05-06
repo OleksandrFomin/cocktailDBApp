@@ -23,7 +23,7 @@ const Filter = () => {
     defaultDrinkCategories,
   );
 
-  const toggleCheckBox = (id) => {
+  const toggleCheckBoxHandler = (id) => {
     const changedCheckbox = toggledCategories.find(
       (category) => category.id === id,
     );
@@ -50,7 +50,9 @@ const Filter = () => {
             return (
               <TouchableOpacity
                 key={item.id}
-                onPress={() => toggleCheckBox(item.id)}>
+                onPress={() => {
+                  toggleCheckBoxHandler(item.id);
+                }}>
                 <View style={styles.filterElementContainer}>
                   <Text style={styles.filterElementText}>
                     {item.strCategory}
@@ -58,6 +60,9 @@ const Filter = () => {
                   <View style={{marginRight: -40}}>
                     <CheckBox
                       checked={item.isChecked}
+                      onPress={() => {
+                        toggleCheckBoxHandler(item.id);
+                      }}
                       checkedIcon="check"
                       checkedColor="#000"
                       uncheckedColor="rgba(255, 255, 255, 0)"

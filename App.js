@@ -1,10 +1,10 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {getDrinksRequest, getCategoriesRequest} from './src/components/API/api';
 import {Context} from './src/components/Context/context';
 import DrinksList from './src/components/DrinksList';
 import Filter from './src/components/Filter';
-import {NavigationContainer, useFocusEffect} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {normalizer} from './src/components/utilities/normalizer';
 import FilterButton from './src/components/FilterButton';
 
@@ -15,15 +15,16 @@ const App = () => {
   const [drinkCategories, setDrinkCategories] = useState([]);
   const [drinksList, setDrinksList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
+
+  const didMountRef = useRef(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
-      setIsLoading(true);
       const categories = await getCategoriesRequest();
       setDefaultDrinkCategories(normalizer(categories));
       setDrinkCategories(normalizer(categories));
-      setIsLoading(false);
     };
 
     fetchCategories();
@@ -31,11 +32,16 @@ const App = () => {
 
   useEffect(() => {
     const fetchDrinks = async () => {
-      setIsLoading(true);
       const drinks = await getDrinksRequest(
         drinkCategories[currentPage].strCategory,
       );
-      setDrinksList([...drinks]);
+
+      setDrinksList([
+        {
+          title: drinkCategories[currentPage].strCategory,
+          data: [...drinks],
+        },
+      ]);
       setIsLoading(false);
     };
     fetchDrinks();
@@ -43,14 +49,27 @@ const App = () => {
 
   useEffect(() => {
     const fetchDrinks = async () => {
-      setIsLoading(true);
+      setIsFetching(true);
+
       const drinks = await getDrinksRequest(
         drinkCategories[currentPage].strCategory,
       );
-      setDrinksList([...drinksList, ...drinks]);
-      setIsLoading(false);
+      setDrinksList((drinksList) => [
+        ...drinksList,
+        {
+          title: drinkCategories[currentPage].strCategory,
+          data: [...drinks],
+        },
+      ]);
+
+      setIsFetching(false);
     };
-    fetchDrinks();
+
+    if (didMountRef.current) {
+      fetchDrinks();
+    } else {
+      didMountRef.current = true;
+    }
   }, [currentPage]);
 
   return (
@@ -65,6 +84,7 @@ const App = () => {
           setDrinkCategories,
           setCurrentPage,
           isLoading,
+          isFetching,
         }}>
         <NavigationContainer>
           <Stack.Navigator>
